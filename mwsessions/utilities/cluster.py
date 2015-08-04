@@ -26,6 +26,7 @@ Options:
     --verbose         Print dots and stuff
     --debug           Print a bunch of logging information
 """
+import io
 import logging
 import sys
 from collections import namedtuple
@@ -47,9 +48,12 @@ def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
 
     if len(args['<source>']) > 0:
-        sources = [mysqltsv.Reader(open(p)) for p in args['<source>']]
+        sources = [mysqltsv.Reader(open(p, errors='replace'))
+                   for p in args['<source>']]
     else:
-        sources = [mysqltsv.Reader(sys.stdin)]
+        input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8',
+                                        errors='replace')
+        sources = [mysqltsv.Reader(input_stream)]
 
     user_cols = args['--user']
     timestamp_col = args['--timestamp']
