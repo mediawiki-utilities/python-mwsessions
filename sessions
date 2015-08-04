@@ -1,2 +1,0 @@
-#!/bin/sh
-python -tt -c "from ns import sessions; sessions.main();" "$@"
