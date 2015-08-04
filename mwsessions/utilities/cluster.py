@@ -123,7 +123,6 @@ def run(sources, cutoff, session_writer, event_writer, user_cols, timestamp_col,
                 prev_timestamp = event[timestamp_col]
 
 
-    logger.info("Grouping revisions into sessions.")
     if verbose: logger.info("{0}={1}".format("verbose", verbose))
     logger.debug("%s=%s" % ("cutoff", cutoff))
 
@@ -141,9 +140,15 @@ def run(sources, cutoff, session_writer, event_writer, user_cols, timestamp_col,
                                "Comparing {0} < {1}".format(last_event, event))
 
         if verbose:
-            if i % 80000 == 0: sys.stderr.write("%06d: " % i)
-            if i % 1000 == 0: sys.stderr.write(".")
-            if (i+1) % 80000 == 0: sys.stderr.write("\n")
+            if i % 80000 == 0:
+                sys.stderr.write("%06d: " % i)
+                sys.stderr.flush()
+            if i % 1000 == 0:
+                sys.stderr.write(".")
+                sys.stderr.flush()
+            if (i+1) % 80000 == 0:
+                sys.stderr.write("\n")
+                sys.stderr.flush()
 
         user = tuple(event[col] for col in user_cols)
         timestamp = event[timestamp_col]
