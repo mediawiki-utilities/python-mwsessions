@@ -1,15 +1,12 @@
-MediaWiki Session Analysis
-==========================
+# MediaWiki Session Analysis
 
 This repo contains a set of utilities for performing session analysis.  
 
 
-Installation
-++++++++++++
+## Installation
 
 Run ``python setup.py install`` from the package directory.
 
-Usage
-+++++
+## Usage
 
 Run ``mwsessions -h`` for documentation on the available utilities.
