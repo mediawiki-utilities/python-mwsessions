@@ -26,17 +26,18 @@ Options:
     --verbose         Print dots and stuff
     --debug           Print a bunch of logging information
 """
-import traceback
 import io
 import logging
 import sys
+import traceback
 from collections import namedtuple
 
 import docopt
 from more_itertools import peekable
-from mw.lib import sessions
 
 import mysqltsv
+
+from ..sessionizer import Sessionizer
 
 logger = logging.getLogger("mwsessions.utilities.cluster")
 
@@ -132,7 +133,7 @@ def run(sources, cutoff, session_writer, event_writer, user_cols, timestamp_col,
     if verbose: logger.info("{0}={1}".format("verbose", verbose))
     logger.debug("%s=%s" % ("cutoff", cutoff))
 
-    cache = sessions.Cache(cutoff=cutoff)
+    sessionizer = Sessionizer(cutoff=cutoff)
 
     last_event = None
     events = sequence(
@@ -159,13 +160,13 @@ def run(sources, cutoff, session_writer, event_writer, user_cols, timestamp_col,
         user = tuple(event[col] for col in user_cols)
         timestamp = event[timestamp_col]
 
-        for user, session_events in cache.process(user, timestamp, event):
+        for user, session_events in sessionizer.process(user, timestamp, event):
             write_session(user, session_events)
 
         last_event = event
 
 
-    for user, session_events in cache.get_active_sessions():
+    for user, session_events in sessionizer.get_active_sessions():
         write_session(user, session_events)
 
 
