@@ -26,6 +26,7 @@ Options:
     --verbose         Print dots and stuff
     --debug           Print a bunch of logging information
 """
+import traceback
 import io
 import logging
 import sys
@@ -43,17 +44,22 @@ SESSION_SUFFIX = ['start', 'end', 'index', 'events']
 EVENT_SUFFIX = ['prev_timestamp', 'session_start', 'session_end',
                 'session_index', 'session_events', 'event_index']
 
+def log_error(lineno, line, error):
+    logger.error("An error occurred while processing line {0}".format(line))
+    logger.error(repr(line))
+    logger.error(traceback.format_exc())
+
 
 def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
 
     if len(args['<source>']) > 0:
-        sources = [mysqltsv.Reader(open(p, errors='replace'))
+        sources = [mysqltsv.Reader(open(p, errors='replace'), error_handler=log_error)
                    for p in args['<source>']]
     else:
         input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8',
                                         errors='replace')
-        sources = [mysqltsv.Reader(input_stream)]
+        sources = [mysqltsv.Reader(input_stream, error_handler=log_error)]
 
     user_cols = args['--user']
     timestamp_col = args['--timestamp']
