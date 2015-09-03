@@ -96,7 +96,6 @@ class Sessionizer:
             self.recently_active.push(active_session)
 
         events.append(event)
-        print(self.recently_active)
 
     def get_active_sessions(self):
         """
