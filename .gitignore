@@ -1,3 +1,6 @@
+# Demos
+demo_*
+
 # Datasets
 datasets/*.tsv
 

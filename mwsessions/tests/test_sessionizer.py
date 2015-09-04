@@ -21,6 +21,7 @@ def test_sessionizer():
     user_sessions = list(sessionizer.get_active_sessions())
     eq_(len(user_sessions), 1)
 
+
 def test_none_comparison():
     sessionizer = Sessionizer(cutoff=2)
 

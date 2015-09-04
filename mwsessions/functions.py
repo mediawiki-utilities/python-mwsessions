@@ -26,17 +26,17 @@ def sessionize(user_events, cutoff=defaults.CUTOFF):
         a iterator over :class:`~mw.lib.sessions.Session`
 
     :Example:
-        >>> from mw.lib import sessions
+        >>> import mwsessions
         >>>
         >>> user_events = [
-        ...     ("Willy on wheels", 100000, {'rev_id': 1}),
-        ...     ("Walter", 100001, {'rev_id': 2}),
-        ...     ("Willy on wheels", 100001, {'rev_id': 3}),
+        ...     ("Willy on wheels", 20150101000000, {'rev_id': 1}),
+        ...     ("Walter", 20150101000001, {'rev_id': 2}),
+        ...     ("Willy on wheels", 20150101000001, {'rev_id': 3}),
         ...     ("Walter", 100035, {'rev_id': 4}),
         ...     ("Willy on wheels", 103602, {'rev_id': 5})
         ... ]
         >>>
-        >>> for user, events in sessions.cluster(user_events):
+        >>> for user, events in mwsessions.sessionize(user_events):
         ...     (user, events)
         ...
         ('Willy on wheels', [{'rev_id': 1}, {'rev_id': 3}])

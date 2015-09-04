@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sessionization &mdash; mwsessions 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="mwsessions 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="Utilities" href="utilities.html" />
+    <link rel="prev" title="MediaWiki Sessions" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="Utilities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MediaWiki Sessions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">mwsessions 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sessionization">
+<h1>Sessionization<a class="headerlink" href="#sessionization" title="Permalink to this headline">¶</a></h1>
+<p>The primary purpose of this library is to provide facilities to aid in
+<cite>sessionizing</cite> chronological sequences of activities into <a class="reference internal" href="#mwsessions.Session" title="mwsessions.Session"><tt class="xref py py-class docutils literal"><span class="pre">mwsessions.Session</span></tt></a>.  You are provided with two options.  <a class="reference internal" href="#mwsessions.sessionize" title="mwsessions.sessionize"><tt class="xref py py-func docutils literal"><span class="pre">mwsessions.sessionize()</span></tt></a> takes an iterable of (user, timestamp, event_data)
+triples and returns an iterator of <a class="reference internal" href="#mwsessions.Session" title="mwsessions.Session"><tt class="xref py py-class docutils literal"><span class="pre">mwsessions.Session</span></tt></a>.  <a class="reference internal" href="#mwsessions.Sessionizer" title="mwsessions.Sessionizer"><tt class="xref py py-class docutils literal"><span class="pre">mwsessions.Sessionizer</span></tt></a>, on the other hand, provides a <tt class="xref py py-func docutils literal"><span class="pre">process()</span></tt> method that allows you to process events one-at-a-time.</p>
+<dl class="function">
+<dt id="mwsessions.sessionize">
+<tt class="descclassname">mwsessions.</tt><tt class="descname">sessionize</tt><big>(</big><em>user_events</em>, <em>cutoff=3600</em><big>)</big><a class="headerlink" href="#mwsessions.sessionize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters user sessions from a sequence of user events.  Note that,
+<cite>event</cite> data will simply be returned in the case of a revert.</p>
+<p>This function serves as a convenience wrapper around calls to
+<tt class="xref py py-class docutils literal"><span class="pre">Cache</span></tt>&#8216;s <tt class="xref py py-meth docutils literal"><span class="pre">process()</span></tt>
+method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt>user_events <span class="classifier-delimiter">:</span> <span class="classifier">iter( (user, timestamp, event) )</span></dt>
+<dd><p class="first">an iterable over tuples of user, timestamp and event data.</p>
+<ul class="last simple">
+<li>user : <cite>hashable</cite></li>
+<li>timestamp : <tt class="xref py py-class docutils literal"><span class="pre">mw.Timestamp</span></tt></li>
+<li>event : <cite>mixed</cite></li>
+</ul>
+</dd>
+<dt>cutoff <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">the maximum time between events within a user session</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a iterator over <tt class="xref py py-class docutils literal"><span class="pre">Session</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mw.lib</span> <span class="kn">import</span> <span class="n">sessions</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user_events</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s">&quot;Walter&quot;</span><span class="p">,</span> <span class="mi">100001</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">100001</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s">&quot;Walter&quot;</span><span class="p">,</span> <span class="mi">100035</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">103602</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">user</span><span class="p">,</span> <span class="n">events</span> <span class="ow">in</span> <span class="n">sessions</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">user_events</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">events</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">(&#39;Willy on wheels&#39;, [{&#39;rev_id&#39;: 1}, {&#39;rev_id&#39;: 3}])</span>
+<span class="go">(&#39;Walter&#39;, [{&#39;rev_id&#39;: 2}, {&#39;rev_id&#39;: 4}])</span>
+<span class="go">(&#39;Willy on wheels&#39;, [{&#39;rev_id&#39;: 5}])</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mwsessions.Sessionizer">
+<em class="property">class </em><tt class="descclassname">mwsessions.</tt><tt class="descname">Sessionizer</tt><big>(</big><em>cutoff=3600</em><big>)</big><a class="headerlink" href="#mwsessions.Sessionizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs an object that manages state for sessionization.
+Since sessions expire once activities stop for at least <cite>cutoff</cite> seconds,
+this class manages a cache of <em>active</em> sessions and uses that to process
+new events.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt>cutoff <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Maximum amount of time in seconds between within-session events</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mw.lib</span> <span class="kn">import</span> <span class="n">sessions</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">sessions</span><span class="o">.</span><span class="n">Cache</span><span class="p">(</span><span class="n">cutoff</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}))</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s">&quot;Walter&quot;</span><span class="p">,</span> <span class="mi">100001</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}))</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">100001</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}))</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s">&quot;Walter&quot;</span><span class="p">,</span> <span class="mi">100035</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}))</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s">&quot;Willy on wheels&quot;</span><span class="p">,</span> <span class="mi">103602</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;rev_id&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}))</span>
+<span class="go">[Session(user=&#39;Willy on wheels&#39;,</span>
+<span class="go">         events=[{&#39;rev_id&#39;: 1}, {&#39;rev_id&#39;: 3}])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get_active_sessions</span><span class="p">())</span>
+<span class="go">[Session(user=&#39;Walter&#39;, events=[{&#39;rev_id&#39;: 2}, {&#39;rev_id&#39;: 4}]),</span>
+<span class="go"> Session(user=&#39;Willy on wheels&#39;, events=[{&#39;rev_id&#39;: 5}])]</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mwsessions.Session">
+<em class="property">class </em><tt class="descclassname">mwsessions.</tt><tt class="descname">Session</tt><a class="headerlink" href="#mwsessions.Session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a user session (a cluster over events for a user).  This class
+behaves like <tt class="xref py py-class docutils literal"><span class="pre">collections.namedtuple</span></tt>.  Note that the datatypes of
+<cite>events</cite>, is not specified since those types will depend on the revision data
+provided during revert detection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>user</strong></dt>
+<dd><p class="first last">A hashable user identifier : <cite>hashable</cite></p>
+</dd>
+<dt><strong>events</strong></dt>
+<dd><p class="first last">A list of event data : list( <cite>mixed</cite> )</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">MediaWiki Sessions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utilities.html"
+                        title="next chapter">Utilities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/sessionization.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="Utilities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="MediaWiki Sessions"
+             >previous</a> |</li>
+        <li><a href="index.html">mwsessions 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Aaron Halfaker.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

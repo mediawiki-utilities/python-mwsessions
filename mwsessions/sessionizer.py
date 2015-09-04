@@ -25,6 +25,7 @@ provided during revert detection.
 
 ActiveSession = namedtuple("ActiveSession", ["timestamp", "i", "events"])
 
+
 class Sessionizer:
     """
     Constructs an object that manages state for sessionization.
@@ -50,11 +51,11 @@ class Sessionizer:
         >>> list(cache.process("Walter", 100035, {'rev_id': 4}))
         []
         >>> list(cache.process("Willy on wheels", 103602, {'rev_id': 5}))
-        [Session(user='Willy on wheels', events=[{'rev_id': 1}, {'rev_id': 3}])]
+        [Session(user='Willy on wheels',
+                 events=[{'rev_id': 1}, {'rev_id': 3}])]
         >>> list(cache.get_active_sessions())
-        [Session(user='Walter', events=[{'rev_id': 2}, {'rev_id': 4}]), Session(user='Willy on wheels', events=[{'rev_id': 5}])]
-
-
+        [Session(user='Walter', events=[{'rev_id': 2}, {'rev_id': 4}]),
+         Session(user='Willy on wheels', events=[{'rev_id': 5}])]
     """
 
     def __init__(self, cutoff=defaults.CUTOFF):

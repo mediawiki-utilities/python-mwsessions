@@ -3,7 +3,7 @@ This script provides access to a set of utilities for processing session data.
 
 Right now, there's only one utility, but there will be more to come.
 
-* cluster -- Clusters events into sessions
+* sessionize -- Clusters a TSV file of events into sessions
 
 Usage:
     mwsessions (-h | --help)
@@ -16,8 +16,6 @@ Options:
 import sys
 import traceback
 from importlib import import_module
-
-import docopt
 
 
 USAGE = """Usage:
