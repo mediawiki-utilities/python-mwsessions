@@ -1,4 +1,15 @@
+import os
+
 from setuptools import setup
+
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+def requirements(fname):
+    for line in open(os.path.join(os.path.dirname(__file__), fname)):
+        yield line.strip()
+
 
 setup(
     name="mwsessions",
@@ -7,9 +18,14 @@ setup(
     author_email="aaron.halfaker@gmail.com",
     url="http://github.com/mediawiki-utilities/python-mwsessions",
     packages=["mwsessions"],
-    license=open("LICENSE").read(),
+    entry_points = {
+        'console_scripts': [
+            'mwsessions=mwsessions.mwsessions:main'
+        ],
+    },
+    license=read("LICENSE"),
     description="A set of utilities for group MediaWiki user actions into " +
                 "sessions.",
-    long_description=open("README.md").read(),
-    install_requires=["mwtypes"]
+    long_description=read("README.md"),
+    install_requires=requirements("requirements.txt")
 )
