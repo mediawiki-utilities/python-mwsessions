@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -13,11 +13,11 @@ def requirements(fname):
 
 setup(
     name="mwsessions",
-    version="0.0.1",  # Change in mwsessions/__init__.py
+    version="0.0.2",  # Change in mwsessions/__init__.py
     author="Aaron Halfaker",
     author_email="aaron.halfaker@gmail.com",
     url="http://github.com/mediawiki-utilities/python-mwsessions",
-    packages=["mwsessions"],
+    packages=find_packages(),
     entry_points = {
         'console_scripts': [
             'mwsessions=mwsessions.mwsessions:main'
