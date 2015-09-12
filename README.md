@@ -1,4 +1,4 @@
-# MediaWiki Sessions
+# MediaWiki sessions
 
 This library provides a set of utilities for group MediaWiki user actions into
 sessions.  
@@ -29,3 +29,6 @@ sessions.
 
 ## Author
 * Aaron Halfaker -- https://github.com/halfak
+
+## See also 
+* https://meta.wikimedia.org/wiki/Research:Activity_session
