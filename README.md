@@ -1,7 +1,7 @@
 # MediaWiki sessions
 
-This library provides a set of utilities for group MediaWiki user actions into
-sessions.  
+This library provides a set of utilities for grouping MediaWiki user actions 
+into sessions.
 
 * **Installation:** ``pip install mwsessions``
 * **Documentation:** https://pythonhosted.org/mwsessions
