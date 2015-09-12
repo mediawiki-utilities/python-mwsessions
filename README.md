@@ -1,4 +1,4 @@
-# MediaWiki Session Analysis
+# MediaWiki Sessions
 
 This library provides a set of utilities for group MediaWiki user actions into
 sessions.  
